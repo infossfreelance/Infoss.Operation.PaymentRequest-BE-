@@ -1,4 +1,5 @@
-﻿using Infoss.Operation.PaymentRequestService.Repositories;
+﻿using Infoss.Operation.PaymentRequestService.Helper;
+using Infoss.Operation.PaymentRequestService.Repositories;
 using Infoss.Reg.UserAccessModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,21 +22,31 @@ namespace Infoss.Operation.PaymentRequestService.Controllers
 
             paymentRequestRepository = new PaymentRequestRepository(Configuration);
         }
+        
+        //[Route("PostByPage")]
+        //[HttpPost]
+        //public async Task<ResponsePages<PaymentRequestResponse>> Post(int pageNumber, int pageSize, [FromBody] UserLogin userLogin)
+        //{
+        //    var route = Request.Path.Value;
 
+        //    var requestPage = new RequestPage();
+        //    requestPage.RowStatus = "ACT";
+        //    requestPage.UserLogin = userLogin;
+        //    requestPage.PageNumber = pageNumber;
+        //    requestPage.PageSize = pageSize;
+
+        //    var responsePage = await paymentRequestRepository.Read(requestPage);
+        //    return responsePage;
+
+        //}
 
         [Route("PostByPage")]
         [HttpPost]
-        public async Task<ResponsePages<PaymentRequestResponse>> Post(int pageNumber, int pageSize, [FromBody] UserLogin userLogin)
+        public async Task<ResponsePages<PaymentRequestResponse>> Post([FromBody] PaymentRequestRead prRead)
         {
             var route = Request.Path.Value;
 
-            var requestPage = new RequestPage();
-            requestPage.RowStatus = "ACT";
-            requestPage.UserLogin = userLogin;
-            requestPage.PageNumber = pageNumber;
-            requestPage.PageSize = pageSize;
-
-            var responsePage = await paymentRequestRepository.Read(requestPage);
+            var responsePage = await paymentRequestRepository.Read(prRead);
             return responsePage;
 
         }

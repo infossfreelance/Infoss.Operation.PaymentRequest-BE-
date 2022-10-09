@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using Dapper;
+using Infoss.Operation.PaymentRequestService.Helper;
 
 namespace Infoss.Operation.PaymentRequestService.Repositories
 {
@@ -14,7 +15,68 @@ namespace Infoss.Operation.PaymentRequestService.Repositories
             connectionString = configuration.GetConnectionString("SqlConnection");
         }
 
-        public async Task<ResponsePages<PaymentRequestResponse>> Read(RequestPage requestPage)
+        //public async Task<ResponsePages<PaymentRequestResponse>> Read(RequestPage requestPage)
+        //{
+        //    var responsePage = new ResponsePages<PaymentRequestResponse>();
+
+        //    try
+        //    {
+        //        var parameters = new DynamicParameters();
+
+        //        parameters.Add("@RowStatus", requestPage.RowStatus);
+        //        parameters.Add("@CountryId", requestPage.UserLogin.CountryId);
+        //        parameters.Add("@CompanyId", requestPage.UserLogin.CompanyId);
+        //        parameters.Add("@BranchId", requestPage.UserLogin.BranchId);
+        //        parameters.Add("@User", requestPage.UserLogin.UserCode);
+        //        parameters.Add("@Id", 0);
+        //        parameters.Add("@PageNo", requestPage.PageNumber);
+        //        parameters.Add("@PageSize", requestPage.PageSize);
+        //        parameters.Add("@RowCount", dbType: DbType.Int32, direction: ParameterDirection.Output);
+        //        parameters.Add("@PageCount", dbType: DbType.Int32, direction: ParameterDirection.Output);
+        //        parameters.Add("@Text", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
+        //        parameters.Add("@Column", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
+        //        parameters.Add("@Format", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
+
+        //        using (var connection = new SqlConnection(connectionString))
+        //        {
+        //            using (var multi = (await connection.QueryMultipleAsync("operation.SP_PaymentRequest_Read_Test", parameters, commandType: CommandType.StoredProcedure)))
+        //            {
+        //                responsePage.Data = (await multi.ReadAsync<PaymentRequestResponse>()).ToList();
+
+        //                responsePage.TotalRowCount = parameters.Get<int>("@RowCount");
+        //                responsePage.TotalPage = parameters.Get<int>("@PageCount");
+        //                responsePage.Text = parameters.Get<string>("@Text");
+        //                responsePage.Column = parameters.Get<string>("@Column");
+        //                responsePage.Format = parameters.Get<string>("@Format");
+
+        //                if (responsePage.Data != null)
+        //                {
+        //                    responsePage.Code = 200;
+        //                    responsePage.Message = "Successfully read";
+        //                }
+        //                else
+        //                {
+        //                    responsePage.Code = 204;
+        //                    responsePage.Message = "No content";
+        //                }
+
+        //                return responsePage;
+        //            }
+        //        }
+
+        //    }
+
+        //    catch (Exception ex)
+        //    {
+        //        responsePage.Code = 500;
+        //        responsePage.Error = ex.Message;
+        //        responsePage.Message = "Failed to read";
+
+        //        return responsePage;
+        //    }
+        //}
+
+        public async Task<ResponsePages<PaymentRequestResponse>> Read(PaymentRequestRead paymentRequestRead)
         {
             var responsePage = new ResponsePages<PaymentRequestResponse>();
 
@@ -22,31 +84,31 @@ namespace Infoss.Operation.PaymentRequestService.Repositories
             {
                 var parameters = new DynamicParameters();
 
-                parameters.Add("@RowStatus", requestPage.RowStatus);
-                parameters.Add("@CountryId", requestPage.UserLogin.CountryId);
-                parameters.Add("@CompanyId", requestPage.UserLogin.CompanyId);
-                parameters.Add("@BranchId", requestPage.UserLogin.BranchId);
-                parameters.Add("@User", requestPage.UserLogin.UserCode);
+                parameters.Add("@RowStatus", paymentRequestRead.RowStatus);
+                parameters.Add("@CountryId", paymentRequestRead.CountryId);
+                parameters.Add("@CompanyId", paymentRequestRead.CompanyId);
+                parameters.Add("@BranchId", paymentRequestRead.BranchId);
+                parameters.Add("@User", paymentRequestRead.UserCode);
                 parameters.Add("@Id", 0);
-                parameters.Add("@PageNo", requestPage.PageNumber);
-                parameters.Add("@PageSize", requestPage.PageSize);
+                parameters.Add("@PageNo", paymentRequestRead.PageNumber);
+                parameters.Add("@PageSize", paymentRequestRead.PageSize);
                 parameters.Add("@RowCount", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@PageCount", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                //parameters.Add("@Text", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
-                //parameters.Add("@Column", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
-                //parameters.Add("@Format", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
+                parameters.Add("@Text", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
+                parameters.Add("@Column", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
+                parameters.Add("@Format", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
 
                 using (var connection = new SqlConnection(connectionString))
                 {
-                    using (var multi = (await connection.QueryMultipleAsync("operation.SP_PaymentRequest_Read_All", parameters, commandType: CommandType.StoredProcedure)))
+                    using (var multi = (await connection.QueryMultipleAsync("operation.SP_PaymentRequest_Read_Test", parameters, commandType: CommandType.StoredProcedure)))
                     {
                         responsePage.Data = (await multi.ReadAsync<PaymentRequestResponse>()).ToList();
 
                         responsePage.TotalRowCount = parameters.Get<int>("@RowCount");
                         responsePage.TotalPage = parameters.Get<int>("@PageCount");
-                        //responsePage.Text = parameters.Get<string>("@Text");
-                        //responsePage.Column = parameters.Get<string>("@Column");
-                        //responsePage.Format = parameters.Get<string>("@Format");
+                        responsePage.Text = parameters.Get<string>("@Text");
+                        responsePage.Column = parameters.Get<string>("@Column");
+                        responsePage.Format = parameters.Get<string>("@Format");
 
                         if (responsePage.Data != null)
                         {
