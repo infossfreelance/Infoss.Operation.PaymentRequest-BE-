@@ -21,6 +21,27 @@ namespace Infoss.Operation.PaymentRequestService.Repositories
 
             try
             {
+                int a = paymentRequestRead.Filter.Length;
+                string queryfilter = "";
+                for (int i = 0; i < a; i++)
+                {
+                    string x = "";
+                    string y = "";
+                    y = paymentRequestRead.Filter[i].Field;
+                    x = paymentRequestRead.Filter[i].Data;
+                    if (y != "")
+                    {
+                        if (y == "DebetCredit")
+                        {
+                            queryfilter = queryfilter + " AND prdtl." + y + " LIKE '%" + x + "%' ";
+                        }
+                        else
+                        {
+                            queryfilter = queryfilter + " AND pr." + y + " LIKE '%" + x + "%' ";
+                        }
+                    }
+                }
+                
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@RowStatus", paymentRequestRead.RowStatus);
@@ -31,6 +52,7 @@ namespace Infoss.Operation.PaymentRequestService.Repositories
                 parameters.Add("@Id", 0);
                 parameters.Add("@PageNo", paymentRequestRead.PageNumber);
                 parameters.Add("@PageSize", paymentRequestRead.PageSize);
+                parameters.Add("@Filter", queryfilter);
                 parameters.Add("@RowCount", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@PageCount", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 parameters.Add("@Text", dbType: DbType.AnsiStringFixedLength, direction: ParameterDirection.Output, size: int.MaxValue);
